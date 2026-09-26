@@ -1,0 +1,25 @@
+.success-state {
+  text-align: center;
+  padding: 60px 20px;
+}
+.check-circle {
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  background: var(--color-primary-light);
+  color: var(--color-primary);
+  font-size: 26px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto 14px;
+}
+.success-heading {
+  margin-bottom: 6px;
+  font-size: 17px;
+  font-weight: 700;
+}
+.success-text {
+  color: var(--color-muted);
+  font-size: 13.5px;
+}

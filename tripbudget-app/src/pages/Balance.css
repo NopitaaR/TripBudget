@@ -1,0 +1,39 @@
+.balance-screen {
+  padding: 20px 20px 100px;
+  max-width: 480px;
+  margin: 0 auto;
+  width: 100%;
+}
+.balance-topbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 20px;
+}
+.wallet-hero {
+  border-radius: var(--radius-lg);
+  padding: 22px;
+  margin-bottom: 22px;
+}
+.wallet-hero-owe {
+  background: var(--color-error-bg);
+}
+.wallet-hero-get {
+  background: var(--color-success-bg);
+}
+.wallet-hero-label {
+  color: var(--color-muted);
+  font-size: 13px;
+}
+.wallet-hero-amount {
+  font-size: 32px;
+  font-weight: 800;
+  letter-spacing: -0.5px;
+  margin-top: 4px;
+}
+.wallet-hero-amount-owe {
+  color: var(--color-error);
+}
+.wallet-hero-amount-get {
+  color: var(--color-primary);
+}

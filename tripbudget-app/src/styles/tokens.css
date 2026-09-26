@@ -1,0 +1,43 @@
+@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap');
+
+:root {
+  /* Color */
+  --color-primary: #1F4D3B;
+  --color-primary-light: #EAF1EC;
+  --color-background: #F7F4EE;
+  --color-surface: #FFFFFF;
+  --color-text: #26241F;
+  --color-muted: #8B8578;
+  --color-accent: #E5A445;
+  --color-accent-light: #FBF0DD;
+  --color-border: #EDE8DD;
+  --color-warning-text: #8A5A15;
+  --color-error: #B5502F;
+  --color-error-bg: #FBEDE7;
+  --color-success: #1F4D3B;
+  --color-success-bg: #EAF1EC;
+
+  /* Typography */
+  --font-family: 'Plus Jakarta Sans', sans-serif;
+
+  /* Spacing */
+  --space-xs: 4px;
+  --space-sm: 8px;
+  --space-sm2: 12px;
+  --space-md: 16px;
+  --space-lg: 20px;
+  --space-xl: 24px;
+
+  /* Radius */
+  --radius-lg: 20px;
+  --radius-md: 16px;
+  --radius-btn: 14px;
+  --radius-input: 13px;
+  --radius-sm: 12px;
+  --radius-xs: 7px;
+  --radius-pill: 100px;
+  --radius-round: 50%;
+
+  /* Shadow */
+  --shadow-fab: 0 6px 16px rgba(31, 77, 59, 0.35);
+}

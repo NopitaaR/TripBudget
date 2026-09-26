@@ -1,0 +1,17 @@
+.badge {
+  font-size: 10.5px;
+  font-weight: 700;
+  padding: 4px 9px;
+  border-radius: var(--radius-pill);
+  position: absolute;
+  top: 14px;
+  right: 14px;
+}
+.badge-upcoming {
+  background: var(--color-accent-light);
+  color: var(--color-warning-text);
+}
+.badge-past {
+  background: var(--color-border);
+  color: var(--color-muted);
+}

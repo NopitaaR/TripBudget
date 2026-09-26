@@ -1,0 +1,23 @@
+.expense-list-screen {
+  padding: 20px 20px 100px;
+  max-width: 480px;
+  margin: 0 auto;
+  width: 100%;
+}
+.filter-row {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 18px;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: none;
+}
+.filter-row::-webkit-scrollbar {
+  display: none;
+}
+.date-group-heading {
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--color-text);
+  margin-bottom: 12px;
+}

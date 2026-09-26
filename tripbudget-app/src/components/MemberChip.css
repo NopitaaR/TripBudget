@@ -1,0 +1,40 @@
+.member-chip {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px 4px;
+  border-bottom: 1px solid var(--color-border);
+}
+.member-chip:last-child {
+  border-bottom: none;
+}
+.member-chip-left {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.member-chip-name {
+  font-size: 14.5px;
+  font-weight: 600;
+}
+.member-chip-amount {
+  font-size: 14.5px;
+  font-weight: 700;
+}
+.member-check {
+  width: 22px;
+  height: 22px;
+  border-radius: var(--radius-xs);
+  border: 2px solid var(--color-border);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  font-size: 13px;
+  color: #fff;
+  flex-shrink: 0;
+}
+.member-check-on {
+  background: var(--color-primary);
+  border-color: var(--color-primary);
+}

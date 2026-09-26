@@ -1,0 +1,44 @@
+.create-trip-screen {
+  padding: 20px 20px 100px;
+  max-width: 480px;
+  margin: 0 auto;
+  width: 100%;
+}
+.field {
+  margin-bottom: 16px;
+}
+.field label {
+  font-size: 12.5px;
+  font-weight: 600;
+  color: var(--color-muted);
+  display: block;
+  margin-bottom: 7px;
+}
+.field input,
+.field textarea {
+  width: 100%;
+  border: 1.5px solid var(--color-border);
+  border-radius: var(--radius-input);
+  padding: 13px 14px;
+  font-size: 14.5px;
+  font-family: var(--font-family);
+  background: var(--color-surface);
+  color: var(--color-text);
+}
+.field input:focus,
+.field textarea:focus {
+  outline: none;
+  border-color: var(--color-primary);
+}
+.field textarea {
+  resize: vertical;
+}
+.field-error {
+  color: var(--color-error);
+  font-size: 12px;
+  margin-top: 4px;
+}
+.date-row {
+  display: flex;
+  gap: 12px;
+}

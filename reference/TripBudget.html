@@ -1,0 +1,380 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>TripBudget</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root{
+  --green:#1F4D3B; --green-light:#EAF1EC;
+  --bg:#F7F4EE; --surface:#FFFFFF; --ink:#26241F; --muted:#8B8578;
+  --accent:#E5A445; --accent-light:#FBF0DD; --border:#EDE8DD;
+  --owe:#B5502F; --owe-bg:#FBEDE7; --get:#1F4D3B; --get-bg:#EAF1EC;
+}
+*{box-sizing:border-box; margin:0; padding:0;}
+body{background:#DDD7C8; font-family:'Plus Jakarta Sans',sans-serif; color:var(--ink);
+  display:flex; justify-content:center; padding:24px 0; min-height:100vh;}
+.phone{width:390px; max-width:94vw; height:844px; background:var(--bg); border-radius:36px;
+  overflow:hidden; position:relative; box-shadow:0 30px 60px rgba(0,0,0,.25); display:flex; flex-direction:column;}
+.screen{flex:1; overflow-y:auto; display:none; padding:20px 20px 100px;}
+.screen.active{display:block;}
+.screen::-webkit-scrollbar{display:none;}
+
+/* ---- typography ---- */
+h1{font-size:22px; font-weight:700;}
+h2{font-size:15px; font-weight:700; color:var(--ink); margin-bottom:12px;}
+.muted{color:var(--muted); font-size:13px;}
+.amt-lg{font-size:32px; font-weight:800; letter-spacing:-0.5px;}
+.amt-md{font-size:20px; font-weight:700;}
+
+/* ---- top bar ---- */
+.topbar{display:flex; align-items:center; justify-content:space-between; margin-bottom:20px;}
+.hello{font-size:19px; font-weight:700;}
+.icon-btn{width:38px; height:38px; border-radius:50%; background:var(--surface); border:1px solid var(--border);
+  display:flex; align-items:center; justify-content:center; font-size:16px; cursor:pointer;}
+.header-row{display:flex; align-items:center; gap:12px; margin-bottom:18px;}
+.back{width:34px; height:34px; border-radius:50%; background:var(--surface); border:1px solid var(--border);
+  display:flex; align-items:center; justify-content:center; cursor:pointer; font-size:15px;}
+
+/* ---- current trip card ---- */
+.trip-card{background:var(--green); color:#fff; border-radius:20px; padding:22px; margin-bottom:22px; position:relative; overflow:hidden;}
+.trip-card .emoji{font-size:26px;}
+.trip-card h2{color:#fff; font-size:21px; margin:8px 0 2px;}
+.trip-card .meta{color:#CFE0D6; font-size:13px; margin-bottom:18px;}
+.trip-card .amt-lg{color:#fff;}
+.trip-card .amt-label{color:#CFE0D6; font-size:12px; margin-top:2px;}
+.trip-card .cta{margin-top:16px; display:inline-flex; align-items:center; gap:6px; color:#fff; font-weight:600; font-size:14px; cursor:pointer;}
+
+/* ---- quick actions ---- */
+.qa-row{display:flex; gap:10px; margin-bottom:24px;}
+.qa{flex:1; background:var(--surface); border:1px solid var(--border); border-radius:16px; padding:14px 8px;
+  text-align:center; cursor:pointer;}
+.qa.primary{background:var(--green); border-color:var(--green);}
+.qa .qi{font-size:20px; display:block; margin-bottom:6px;}
+.qa span.label{font-size:11.5px; font-weight:600; color:var(--ink);}
+.qa.primary .label{color:#fff;}
+
+/* ---- lists / rows ---- */
+.section-title-row{display:flex; justify-content:space-between; align-items:center; margin-bottom:12px;}
+.link-sm{font-size:12.5px; color:var(--green); font-weight:600; cursor:pointer;}
+.row{display:flex; align-items:center; gap:12px; padding:12px 0; border-bottom:1px solid var(--border); cursor:pointer;}
+.row:last-child{border-bottom:none;}
+.row .ic{width:40px; height:40px; border-radius:12px; background:var(--accent-light); display:flex; align-items:center; justify-content:center; font-size:18px; flex-shrink:0;}
+.row .info{flex:1; min-width:0;}
+.row .title{font-size:14.5px; font-weight:600;}
+.row .sub{font-size:12px; color:var(--muted); margin-top:1px;}
+.row .amount{font-size:14.5px; font-weight:700; white-space:nowrap;}
+
+/* ---- trip list cards ---- */
+.tab-row{display:flex; gap:8px; margin-bottom:18px;}
+.tab{padding:8px 16px; border-radius:100px; font-size:13px; font-weight:600; background:var(--surface); border:1px solid var(--border); color:var(--muted); cursor:pointer;}
+.tab.active{background:var(--green); color:#fff; border-color:var(--green);}
+.trip-mini{background:var(--surface); border:1px solid var(--border); border-radius:18px; padding:16px; margin-bottom:12px; cursor:pointer; position:relative;}
+.trip-mini .badge{position:absolute; top:14px; right:14px; font-size:10.5px; font-weight:700; padding:4px 9px; border-radius:100px;}
+.badge.upcoming{background:var(--accent-light); color:#8A5A15;}
+.badge.past{background:var(--border); color:var(--muted);}
+.trip-mini .emoji{font-size:20px;}
+.trip-mini .name{font-size:16px; font-weight:700; margin:6px 0 2px;}
+
+/* ---- buttons ---- */
+.btn{width:100%; background:var(--green); color:#fff; border:none; border-radius:14px; padding:16px; font-size:15px; font-weight:700; cursor:pointer; font-family:inherit;}
+.btn.ghost{background:transparent; border:1.5px solid var(--border); color:var(--ink);}
+.btn.small{padding:10px; font-size:13px; border-radius:12px;}
+
+/* ---- form ---- */
+.field{margin-bottom:16px;}
+.field label{font-size:12.5px; font-weight:600; color:var(--muted); display:block; margin-bottom:7px;}
+.field input, .field textarea{width:100%; border:1.5px solid var(--border); border-radius:13px; padding:13px 14px; font-size:14.5px; font-family:inherit; background:var(--surface);}
+.field input:focus, .field textarea:focus{outline:none; border-color:var(--green);}
+.amount-input{width:100%; border:none; background:transparent; font-size:38px; font-weight:800; text-align:center; font-family:inherit; color:var(--ink); outline:none;}
+.amount-wrap{background:var(--surface); border-radius:18px; padding:24px 10px; text-align:center; margin-bottom:20px; border:1.5px solid var(--border);}
+
+/* ---- category chips ---- */
+.cat-grid{display:flex; flex-wrap:wrap; gap:8px; margin-bottom:20px;}
+.cat{padding:9px 14px; border-radius:100px; border:1.5px solid var(--border); font-size:13px; font-weight:600; background:var(--surface); cursor:pointer;}
+.cat.active{background:var(--green); border-color:var(--green); color:#fff;}
+
+/* ---- avatars / members ---- */
+.member-chip{display:flex; align-items:center; justify-content:space-between; padding:12px 4px; border-bottom:1px solid var(--border);}
+.member-chip:last-child{border-bottom:none;}
+.member-left{display:flex; align-items:center; gap:10px;}
+.avatar{width:34px; height:34px; border-radius:50%; background:var(--green-light); color:var(--green); display:flex; align-items:center; justify-content:center; font-weight:700; font-size:13px;}
+.check{width:22px; height:22px; border-radius:7px; border:2px solid var(--border); display:flex; align-items:center; justify-content:center; cursor:pointer; font-size:13px; color:#fff;}
+.check.on{background:var(--green); border-color:var(--green);}
+.share-note{text-align:center; color:var(--muted); font-size:12.5px; margin-bottom:16px;}
+.share-note b{color:var(--ink);}
+
+/* ---- summary two-col ---- */
+.stat-row{display:flex; gap:12px; margin-bottom:22px;}
+.stat{flex:1; background:var(--surface); border:1px solid var(--border); border-radius:16px; padding:16px;}
+
+/* ---- wallet ---- */
+.wallet-hero{border-radius:20px; padding:22px; margin-bottom:22px;}
+.wallet-hero.owe{background:var(--owe-bg);}
+.wallet-hero.get{background:var(--get-bg);}
+.wallet-hero .amt-lg{margin-top:4px;}
+.wallet-hero.owe .amt-lg{color:var(--owe);}
+.wallet-hero.get .amt-lg{color:var(--get);}
+.debt-row{display:flex; align-items:center; justify-content:space-between; background:var(--surface); border:1px solid var(--border); border-radius:16px; padding:14px 16px; margin-bottom:10px;}
+.debt-left{display:flex; align-items:center; gap:10px;}
+.debt-left .t{font-size:14px; font-weight:600;}
+.debt-left .a{font-size:15px; font-weight:800; margin-top:2px;}
+.pill-btn{padding:9px 14px; border-radius:100px; border:1.5px solid var(--green); color:var(--green); background:transparent; font-weight:700; font-size:12.5px; cursor:pointer; white-space:nowrap;}
+.pill-btn.done{background:var(--green); color:#fff; border-color:var(--green);}
+
+/* ---- empty state ---- */
+.empty{text-align:center; padding:60px 20px;}
+.empty .big-ic{font-size:44px; margin-bottom:14px;}
+.empty h2{margin-bottom:6px; font-size:17px;}
+.empty p{color:var(--muted); font-size:13.5px; margin-bottom:20px;}
+
+/* ---- bottom nav ---- */
+.bottomnav{position:absolute; bottom:0; left:0; right:0; background:var(--surface); border-top:1px solid var(--border);
+  display:flex; align-items:center; justify-content:space-around; padding:10px 8px calc(14px + env(safe-area-inset-bottom,0px));}
+.navitem{display:flex; flex-direction:column; align-items:center; gap:3px; cursor:pointer; color:var(--muted); font-size:10.5px; font-weight:600; flex:1;}
+.navitem.active{color:var(--green);}
+.navitem .ni{font-size:19px;}
+.navitem.addbtn .ni{width:46px; height:46px; border-radius:50%; background:var(--green); color:#fff; display:flex; align-items:center; justify-content:center; font-size:22px; margin-top:-24px; box-shadow:0 6px 16px rgba(31,77,59,.35);}
+
+/* ---- toast ---- */
+.toast{position:absolute; left:20px; right:20px; bottom:100px; background:var(--ink); color:#fff; padding:13px 16px; border-radius:14px;
+  font-size:13.5px; font-weight:600; display:flex; align-items:center; gap:8px; opacity:0; transform:translateY(8px); transition:all .25s ease; pointer-events:none; z-index:50;}
+.toast.show{opacity:1; transform:translateY(0);}
+
+/* ---- settlement done ---- */
+.done-card{background:var(--surface); border:1px solid var(--border); border-radius:16px; padding:16px; margin-bottom:10px; opacity:.55;}
+.check-circle{width:56px; height:56px; border-radius:50%; background:var(--green-light); color:var(--green); font-size:26px; display:flex; align-items:center; justify-content:center; margin:0 auto 14px;}
+</style>
+</head>
+<body>
+<div class="phone">
+
+  <!-- ===================== HOME ===================== -->
+  <div class="screen active" id="screen-home">
+    <div class="topbar">
+      <div><div class="hello">Good evening, Nopi 👋</div><div class="muted">Ready for your next trip?</div></div>
+      <div style="display:flex; gap:8px;"><div class="icon-btn">🔔</div><div class="icon-btn">👤</div></div>
+    </div>
+
+    <div class="trip-card" onclick="go('trip-detail')">
+      <div class="emoji">🏔️</div>
+      <h2>Sibayak</h2>
+      <div class="meta">12–13 October 2026 · 4 travelers</div>
+      <div class="amt-lg">Rp380.000</div>
+      <div class="amt-label">Total spending</div>
+      <div class="cta">View trip →</div>
+    </div>
+
+    <h2>Quick actions</h2>
+    <div class="qa-row">
+      <div class="qa primary" onclick="go('add-expense')"><span class="qi">➕</span><span class="label">Add Expense</span></div>
+      <div class="qa" onclick="go('add-members')"><span class="qi">👥</span><span class="label">Members</span></div>
+      <div class="qa" onclick="go('settlement')"><span class="qi">🤝</span><span class="label">Settlement</span></div>
+      <div class="qa" onclick="go('trip-detail')"><span class="qi">📊</span><span class="label">Summary</span></div>
+    </div>
+
+    <div class="section-title-row"><h2 style="margin:0;">Recent activity</h2><span class="link-sm" onclick="go('expenses')">See all</span></div>
+    <div class="row" onclick="go('expense-detail')"><div class="ic">🍜</div><div class="info"><div class="title">Dinner</div><div class="sub">Karina paid · Today</div></div><div class="amount">Rp160.000</div></div>
+    <div class="row" onclick="go('expense-detail')"><div class="ic">⛽</div><div class="info"><div class="title">Fuel</div><div class="sub">Nopi paid · Today</div></div><div class="amount">Rp120.000</div></div>
+    <div class="row" onclick="go('expense-detail')"><div class="ic">🎟️</div><div class="info"><div class="title">Entrance ticket</div><div class="sub">Novita paid · Yesterday</div></div><div class="amount">Rp80.000</div></div>
+  </div>
+
+  <!-- ===================== TRIPS ===================== -->
+  <div class="screen" id="screen-trips">
+    <div class="topbar"><h1>My Trips</h1><div class="icon-btn" onclick="go('create-trip')">+</div></div>
+
+    <h2>Upcoming</h2>
+    <div class="trip-mini" onclick="go('trip-detail')"><span class="badge upcoming">Upcoming</span><div class="emoji">🏔️</div><div class="name">Sibayak</div><div class="muted">12–13 Oct 2026 · 4 people</div><div style="margin-top:8px; font-weight:700; font-size:14px;">Rp380.000 spent</div></div>
+
+    <h2 style="margin-top:22px;">Past Trips</h2>
+    <div class="trip-mini"><span class="badge past">Completed</span><div class="emoji">🏕️</div><div class="name">Sibuatan</div><div class="muted">17–18 Aug 2026 · 5 people</div><div style="margin-top:8px; font-weight:700; font-size:14px;">Rp750.000 spent</div></div>
+  </div>
+
+  <!-- ===================== CREATE TRIP ===================== -->
+  <div class="screen" id="screen-create-trip">
+    <div class="header-row"><div class="back" onclick="go('trips')">←</div><h1>Create New Trip</h1></div>
+    <div class="field"><label>Trip name</label><input placeholder="Sibayak Adventure"></div>
+    <div class="field"><label>Location</label><input placeholder="North Sumatra"></div>
+    <div style="display:flex; gap:12px;">
+      <div class="field" style="flex:1;"><label>Start date</label><input placeholder="12 Oct 2026"></div>
+      <div class="field" style="flex:1;"><label>End date</label><input placeholder="13 Oct 2026"></div>
+    </div>
+    <div class="field"><label>Notes (optional)</label><textarea rows="3" placeholder="Anything the group should know"></textarea></div>
+    <button class="btn" onclick="go('add-members')">Create Trip</button>
+  </div>
+
+  <!-- ===================== ADD MEMBERS ===================== -->
+  <div class="screen" id="screen-add-members">
+    <div class="header-row"><div class="back" onclick="go('create-trip')">←</div><h1>Add Travelers</h1></div>
+    <p class="muted" style="margin-bottom:18px;">Who's joining this trip?</p>
+    <div class="member-chip"><div class="member-left"><div class="avatar">N</div><span>Nopi</span></div></div>
+    <div class="member-chip"><div class="member-left"><div class="avatar">N</div><span>Novita</span></div></div>
+    <div class="member-chip"><div class="member-left"><div class="avatar">K</div><span>Karina</span></div></div>
+    <div class="member-chip"><div class="member-left"><div class="avatar">P</div><span>Putra</span></div></div>
+    <button class="btn ghost" style="margin-top:16px;">+ Add member</button>
+    <button class="btn" style="margin-top:12px;" onclick="go('trip-detail')">Continue</button>
+  </div>
+
+  <!-- ===================== TRIP DETAIL ===================== -->
+  <div class="screen" id="screen-trip-detail">
+    <div class="header-row" style="justify-content:space-between;">
+      <div style="display:flex; align-items:center; gap:12px;"><div class="back" onclick="go('trips')">←</div><h1 style="font-size:18px;">Sibayak</h1></div>
+      <div class="icon-btn">⋮</div>
+    </div>
+    <div class="muted" style="margin-bottom:20px;">🏔️ 12–13 October 2026 · 4 travelers</div>
+
+    <div class="stat-row">
+      <div class="stat"><div class="amt-md">Rp380.000</div><div class="muted" style="margin-top:2px;">Total spending</div></div>
+      <div class="stat"><div class="amt-md">Rp95.000</div><div class="muted" style="margin-top:2px;">Per person</div></div>
+    </div>
+
+    <h2>Members</h2>
+    <div style="display:flex; gap:16px; margin-bottom:22px;">
+      <div style="text-align:center;"><div class="avatar" style="margin:0 auto;">N</div><div class="muted" style="font-size:11px; margin-top:4px;">Nopi</div></div>
+      <div style="text-align:center;"><div class="avatar" style="margin:0 auto;">N</div><div class="muted" style="font-size:11px; margin-top:4px;">Novita</div></div>
+      <div style="text-align:center;"><div class="avatar" style="margin:0 auto;">K</div><div class="muted" style="font-size:11px; margin-top:4px;">Karina</div></div>
+      <div style="text-align:center;"><div class="avatar" style="margin:0 auto;">P</div><div class="muted" style="font-size:11px; margin-top:4px;">Putra</div></div>
+    </div>
+
+    <div class="section-title-row"><h2 style="margin:0;">Recent expenses</h2><span class="link-sm" onclick="go('expenses')">See all</span></div>
+    <div class="row" onclick="go('expense-detail')"><div class="ic">🍜</div><div class="info"><div class="title">Food</div><div class="sub">Karina</div></div><div class="amount">Rp160.000</div></div>
+    <div class="row" onclick="go('expense-detail')"><div class="ic">⛽</div><div class="info"><div class="title">Fuel</div><div class="sub">Nopi</div></div><div class="amount">Rp120.000</div></div>
+    <div class="row" onclick="go('expense-detail')"><div class="ic">🎟️</div><div class="info"><div class="title">Ticket</div><div class="sub">Novita</div></div><div class="amount">Rp80.000</div></div>
+    <div class="row" onclick="go('expense-detail')"><div class="ic">🅿️</div><div class="info"><div class="title">Parking</div><div class="sub">Putra</div></div><div class="amount">Rp20.000</div></div>
+
+    <button class="btn" style="margin-top:20px;" onclick="go('add-expense')">+ Add Expense</button>
+  </div>
+
+  <!-- ===================== EXPENSES LIST ===================== -->
+  <div class="screen" id="screen-expenses">
+    <div class="header-row"><div class="back" onclick="go('trip-detail')">←</div><h1>Expenses</h1></div>
+    <div class="tab-row"><div class="tab active">All</div><div class="tab">Food</div><div class="tab">Transport</div><div class="tab">Tickets</div></div>
+    <h2>Today</h2>
+    <div class="row" onclick="go('expense-detail')"><div class="ic">🍜</div><div class="info"><div class="title">Dinner</div><div class="sub">Karina paid</div></div><div class="amount">Rp160.000</div></div>
+    <div class="row" onclick="go('expense-detail')"><div class="ic">⛽</div><div class="info"><div class="title">Fuel</div><div class="sub">Nopi paid</div></div><div class="amount">Rp120.000</div></div>
+    <h2 style="margin-top:18px;">Yesterday</h2>
+    <div class="row" onclick="go('expense-detail')"><div class="ic">🎟️</div><div class="info"><div class="title">Entrance ticket</div><div class="sub">Novita paid</div></div><div class="amount">Rp80.000</div></div>
+  </div>
+
+  <!-- ===================== EXPENSE DETAIL ===================== -->
+  <div class="screen" id="screen-expense-detail">
+    <div class="header-row"><div class="back" onclick="go('trip-detail')">←</div><h1 style="font-size:18px;">Dinner</h1></div>
+    <div class="muted" style="margin-bottom:10px;">🍜 Food</div>
+    <div class="amt-lg" style="margin-bottom:20px;">Rp160.000</div>
+    <div class="muted" style="margin-bottom:8px; font-weight:600; color:var(--ink);">Paid by</div>
+    <div class="member-chip"><div class="member-left"><div class="avatar">K</div><span>Karina</span></div></div>
+    <div class="muted" style="margin:18px 0 8px; font-weight:600; color:var(--ink);">Split between</div>
+    <div class="member-chip"><div class="member-left"><div class="avatar">N</div><span>Nopi</span></div><b>Rp40.000</b></div>
+    <div class="member-chip"><div class="member-left"><div class="avatar">N</div><span>Novita</span></div><b>Rp40.000</b></div>
+    <div class="member-chip"><div class="member-left"><div class="avatar">K</div><span>Karina</span></div><b>Rp40.000</b></div>
+    <div class="member-chip"><div class="member-left"><div class="avatar">P</div><span>Putra</span></div><b>Rp40.000</b></div>
+    <div style="display:flex; gap:10px; margin-top:20px;">
+      <button class="btn ghost" style="flex:1;">Edit</button>
+      <button class="btn ghost" style="flex:1; color:var(--owe); border-color:#EAD3C8;">Delete</button>
+    </div>
+  </div>
+
+  <!-- ===================== ADD EXPENSE ===================== -->
+  <div class="screen" id="screen-add-expense">
+    <div class="header-row"><div class="back" onclick="go('home')">←</div><h1>Add Expense</h1></div>
+    <div class="field"><label>What did you spend on?</label><input placeholder="Dinner"></div>
+    <div class="amount-wrap"><div class="muted" style="margin-bottom:6px;">Amount</div><input class="amount-input" value="Rp160.000"></div>
+    <div class="field"><label>Category</label>
+      <div class="cat-grid">
+        <div class="cat active">🍜 Food</div><div class="cat">⛽ Transport</div><div class="cat">🎟️ Ticket</div>
+        <div class="cat">🏕️ Stay</div><div class="cat">🛒 Shopping</div><div class="cat">📦 Other</div>
+      </div>
+    </div>
+    <div class="field"><label>Paid by</label><input value="Karina"></div>
+    <div class="field"><label>Split between</label>
+      <div class="member-chip"><div class="member-left"><div class="avatar">N</div><span>Nopi</span></div><div class="check on">✓</div></div>
+      <div class="member-chip"><div class="member-left"><div class="avatar">N</div><span>Novita</span></div><div class="check on">✓</div></div>
+      <div class="member-chip"><div class="member-left"><div class="avatar">K</div><span>Karina</span></div><div class="check on">✓</div></div>
+      <div class="member-chip"><div class="member-left"><div class="avatar">P</div><span>Putra</span></div><div class="check on">✓</div></div>
+    </div>
+    <div class="share-note">Split 4 ways — <b>Rp40.000 each</b></div>
+    <button class="btn" onclick="toast('Expense added'); go('trip-detail')">Add Expense</button>
+  </div>
+
+  <!-- ===================== WALLET ===================== -->
+  <div class="screen" id="screen-wallet">
+    <div class="topbar"><h1>Wallet</h1><div class="icon-btn">👤</div></div>
+
+    <div class="wallet-hero owe">
+      <div class="muted" style="color:#8A4A32;">You currently owe</div>
+      <div class="amt-lg">Rp75.000</div>
+    </div>
+    <div class="debt-row"><div class="debt-left"><div class="avatar">K</div><div><div class="t">You owe Karina</div><div class="a">Rp65.000</div></div></div><button class="pill-btn" onclick="markPaid(this)">Mark as paid</button></div>
+    <div class="debt-row"><div class="debt-left"><div class="avatar">N</div><div><div class="t">You owe Nopi</div><div class="a">Rp10.000</div></div></div><button class="pill-btn" onclick="markPaid(this)">Mark as paid</button></div>
+
+    <div class="wallet-hero get" style="margin-top:22px;">
+      <div class="muted" style="color:#3E6B54;">You will receive</div>
+      <div class="amt-lg">Rp90.000</div>
+    </div>
+    <div class="debt-row"><div class="debt-left"><div class="avatar">K</div><div><div class="t">Karina owes you</div><div class="a">Rp65.000</div></div></div><button class="pill-btn" onclick="markPaid(this)">Mark as paid</button></div>
+    <div class="debt-row"><div class="debt-left"><div class="avatar">P</div><div><div class="t">Putra owes you</div><div class="a">Rp25.000</div></div></div><button class="pill-btn" onclick="markPaid(this)">Mark as paid</button></div>
+
+    <button class="btn" style="margin-top:16px;" onclick="go('settlement')">View full settlement</button>
+  </div>
+
+  <!-- ===================== SETTLEMENT ===================== -->
+  <div class="screen" id="screen-settlement">
+    <div class="header-row"><div class="back" onclick="go('wallet')">←</div><h1>Settlement</h1></div>
+    <p class="muted" style="margin-bottom:16px;">Based on Rp380.000 total across 4 people (Rp95.000 each), here's the simplest way to settle up.</p>
+    <h2>Payments to make</h2>
+    <div class="debt-row"><div class="debt-left"><div class="avatar">P</div><div><div class="t">Putra → Karina</div><div class="a">Rp65.000</div></div></div><button class="pill-btn" onclick="markPaid(this)">Mark as paid</button></div>
+    <div class="debt-row"><div class="debt-left"><div class="avatar">P</div><div><div class="t">Putra → Nopi</div><div class="a">Rp10.000</div></div></div><button class="pill-btn" onclick="markPaid(this)">Mark as paid</button></div>
+  </div>
+
+  <!-- ===================== SETTLED (empty/success state) ===================== -->
+  <div class="screen" id="screen-settled">
+    <div class="header-row"><div class="back" onclick="go('wallet')">←</div><h1>Settlement</h1></div>
+    <div class="empty">
+      <div class="check-circle">✓</div>
+      <h2>All settled 🎉</h2>
+      <p>No outstanding payments.</p>
+    </div>
+  </div>
+
+  <!-- ===================== BOTTOM NAV ===================== -->
+  <div class="bottomnav">
+    <div class="navitem active" data-tab="home" onclick="go('home')"><span class="ni">🏠</span>Home</div>
+    <div class="navitem" data-tab="trips" onclick="go('trips')"><span class="ni">🧳</span>Trips</div>
+    <div class="navitem addbtn" onclick="go('add-expense')"><span class="ni">+</span></div>
+    <div class="navitem" data-tab="wallet" onclick="go('wallet')"><span class="ni">💰</span>Wallet</div>
+  </div>
+
+  <div class="toast" id="toast"></div>
+</div>
+
+<script>
+const navTabs = {home:'home', trips:'trips', wallet:'wallet'};
+function go(id){
+  document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
+  document.getElementById('screen-'+id).classList.add('active');
+  document.querySelectorAll('.navitem[data-tab]').forEach(n=>n.classList.remove('active'));
+  if(navTabs[id]) document.querySelector('.navitem[data-tab="'+id+'"]').classList.add('active');
+  document.getElementById('screen-'+id).scrollTop = 0;
+}
+function toast(msg){
+  const t=document.getElementById('toast');
+  t.textContent=msg; t.classList.add('show');
+  setTimeout(()=>t.classList.remove('show'), 1800);
+}
+function markPaid(btn){
+  btn.textContent='✓ Paid'; btn.classList.add('done'); btn.disabled=true;
+  const row=btn.closest('.debt-row'); row.style.opacity='.5';
+  toast('Payment marked as completed');
+}
+document.querySelectorAll('.cat').forEach(c=>c.addEventListener('click',()=>{
+  document.querySelectorAll('.cat').forEach(x=>x.classList.remove('active')); c.classList.add('active');
+}));
+document.querySelectorAll('.check').forEach(c=>c.addEventListener('click',()=>c.classList.toggle('on')));
+document.querySelectorAll('.tab').forEach(t=>t.addEventListener('click',()=>{
+  document.querySelectorAll('.tab').forEach(x=>x.classList.remove('active')); t.classList.add('active');
+}));
+</script>
+</body>
+</html>
