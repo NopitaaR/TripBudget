@@ -27,19 +27,6 @@ export default function BottomNav() {
         <span className="nav-icon">🧳</span>
         <span className="nav-label">Trips</span>
       </div>
-      <div
-        className="nav-item nav-item-add"
-        onClick={() => navigate('/add-expense')}
-      >
-        <span className="nav-icon nav-add-circle">+</span>
-      </div>
-      <div
-        className={`nav-item ${isActive('/balance') ? 'nav-item-active' : ''}`}
-        onClick={() => navigate('/balance')}
-      >
-        <span className="nav-icon">💰</span>
-        <span className="nav-label">Balance</span>
-      </div>
     </nav>
   );
 }

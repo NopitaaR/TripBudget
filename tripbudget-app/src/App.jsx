@@ -10,7 +10,6 @@ import TripDetail from './pages/TripDetail';
 import AddExpense from './pages/AddExpense';
 import ExpenseList from './pages/ExpenseList';
 import ExpenseDetail from './pages/ExpenseDetail';
-import Balance from './pages/Balance';
 import Settlement from './pages/Settlement';
 import './styles/global.css';
 
@@ -31,7 +30,7 @@ function AppContent() {
         <Route path="/trips/:tripId/expenses/:expenseId/edit" element={<AddExpense />} />
         <Route path="/trips/:tripId/settlement" element={<Settlement />} />
         <Route path="/add-expense" element={<AddExpense />} />
-        <Route path="/balance" element={<Balance />} />
+        
       </Routes>
       <BottomNav />
       <Toast message={toast.message} show={toast.show} />

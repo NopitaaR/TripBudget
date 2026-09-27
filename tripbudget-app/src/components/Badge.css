@@ -8,10 +8,10 @@
   right: 14px;
 }
 .badge-upcoming {
-  background: var(--color-accent-light);
-  color: var(--color-warning-text);
+  background: #FFF3D6;
+  color: #A16207;
 }
 .badge-past {
-  background: var(--color-border);
-  color: var(--color-muted);
+  background: #E4F3EC;
+  color: #176044;
 }
